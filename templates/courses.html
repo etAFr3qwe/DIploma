@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Курсы подготовки — Платформа подготовки к экзаменам</title>
+    <link rel="stylesheet" href="{{ url_for('static', path='style.css') }}?v=20260625">
+</head>
+<body data-page="courses">
+    {% import "base.html" as layout with context %}
+    {{ layout.topbar("courses") }}
+
+    <main>
+        <section class="course-hero">
+            <div class="container">
+                <div class="course-hero-grid">
+                    <div>
+                        <p class="section-label">Курсы</p>
+                        <h1>ОГЭ и ЕГЭ по математике</h1>
+                        <p class="hero-text">Выберите экзамен, откройте структуру модулей, недельный план и задания с фиксацией попыток.</p>
+                    </div>
+                    <aside class="control-panel">
+                        <label>
+                            Тестовый пользователь
+                            <select id="user-select"></select>
+                        </label>
+                        <div class="profile-mini">
+                            <strong id="profile-name">-</strong>
+                            <span id="profile-meta">-</span>
+                        </div>
+                    </aside>
+                </div>
+            </div>
+        </section>
+
+        <section class="section-block">
+            <div class="container">
+                <div class="section-heading">
+                    <div>
+                        <p class="section-label">Доступные направления</p>
+                        <h2>Выберите курс</h2>
+                    </div>
+                </div>
+                <div id="home-course-grid" class="course-grid course-grid-large"></div>
+            </div>
+        </section>
+    </main>
+
+    <div id="modal" class="modal" hidden>
+        <div class="modal-card">
+            <button id="modal-close" class="modal-close" type="button">×</button>
+            <h3 id="modal-title">Информация</h3>
+            <div id="modal-text"></div>
+        </div>
+    </div>
+
+    <script src="{{ url_for('static', path='app.js') }}?v=20260625"></script>
+</body>
+</html>

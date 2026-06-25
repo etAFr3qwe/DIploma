@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Родительский отчёт — Платформа подготовки к экзаменам</title>
+    <link rel="stylesheet" href="{{ url_for('static', path='style.css') }}?v=20260625">
+</head>
+<body data-page="parent-report" data-current-user-id="{{ current_user.id }}">
+    {% import "base.html" as layout with context %}
+    {{ layout.topbar(active_page or "parent_report") }}
+
+    <main>
+        <section class="course-hero">
+            <div class="container">
+                <div class="course-hero-grid">
+                    <div>
+                        <p class="section-label">Родительский доступ</p>
+                        <h1>Родительский отчёт</h1>
+                        <p class="hero-text">Понятная сводка о подготовке ребёнка: выполненные задания, попытки, сильные и слабые темы, прогноз результата.</p>
+                    </div>
+                    <aside class="control-panel">
+                        <label>
+                            Тестовый пользователь
+                            <select id="user-select"></select>
+                        </label>
+                        <div class="profile-mini">
+                            <strong id="profile-name">{{ current_user.name }}</strong>
+                            <span id="profile-meta">{{ current_user.email }}</span>
+                        </div>
+                    </aside>
+                </div>
+            </div>
+        </section>
+
+        <section class="section-block">
+            <div class="container">
+                <div class="parent-report-grid">
+                    <article class="report-card">
+                        <p class="section-label">Ученик</p>
+                        <h2>{{ child.name }}</h2>
+                        <p>{{ report.current_level }}</p>
+                        <div class="metric-grid compact">
+                            <div class="metric-item"><span>Выполнено заданий</span><strong>{{ report.completed_tasks }}</strong></div>
+                            <div class="metric-item"><span>Попыток</span><strong>{{ report.attempts_count }}</strong></div>
+                            <div class="metric-item"><span>Верных решений</span><strong>{{ report.correct_percent|round|int }}%</strong></div>
+                            <div class="metric-item"><span>Среднее время</span><strong>{{ report.average_time_seconds|duration }}</strong></div>
+                        </div>
+                    </article>
+                    <article class="report-card">
+                        <p class="section-label">Прогноз</p>
+                        <h2>{{ report.predicted_primary_score }} баллов</h2>
+                        <p>Ориентировочный тестовый результат: {{ report.predicted_test_score }}.</p>
+                        <p><strong>Основные риски:</strong> {{ report.main_risks|join(", ") if report.main_risks else "критичных рисков не выявлено" }}</p>
+                    </article>
+                </div>
+
+                <div class="comparison-grid">
+                    <article class="comparison-card warning-card">
+                        <h3>Темы, которые нужно подтянуть</h3>
+                        <p>{{ report.weak_topics|join(", ") if report.weak_topics else "Слабые темы пока не выявлены." }}</p>
+                    </article>
+                    <article class="comparison-card success-card">
+                        <h3>Освоенные темы</h3>
+                        <p>{{ report.mastered_topics|join(", ") if report.mastered_topics else "Список появится после новых проверенных попыток." }}</p>
+                    </article>
+                </div>
+
+                <article class="report-card">
+                    <h2>Рекомендации на следующую неделю</h2>
+                    {% if report.next_week_recommendations %}
+                        <ul class="clean-list">
+                            {% for item in report.next_week_recommendations %}
+                                <li>{{ item }}</li>
+                            {% endfor %}
+                        </ul>
+                    {% else %}
+                        <p>Отчёт появится после выполнения первых заданий.</p>
+                    {% endif %}
+                </article>
+            </div>
+        </section>
+    </main>
+
+    <div id="modal" class="modal" hidden>
+        <div class="modal-card">
+            <button id="modal-close" class="modal-close" type="button">×</button>
+            <h3 id="modal-title">Информация</h3>
+            <div id="modal-text"></div>
+        </div>
+    </div>
+
+    <script src="{{ url_for('static', path='app.js') }}?v=20260625"></script>
+</body>
+</html>

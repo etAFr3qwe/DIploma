@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Карточка работы — Платформа подготовки к экзаменам</title>
+    <link rel="stylesheet" href="{{ url_for('static', path='style.css') }}?v=20260625">
+</head>
+<body data-page="teacher-attempt-detail" data-attempt-id="{{ attempt_id }}" data-current-user-id="{{ current_user.id }}">
+    {% import "base.html" as layout with context %}
+    {{ layout.topbar("teacher_attempts") }}
+
+    <main>
+        <section class="course-hero">
+            <div class="container">
+                <nav class="breadcrumbs">
+                    <a href="{{ url_for('index') }}">Главная</a>
+                    <span>→</span>
+                    <a href="{{ url_for('teacher_page') }}?user_id={{ current_user.id }}">Панель преподавателя</a>
+                    <span>→</span>
+                    <a href="{{ url_for('get_teacher_attempts') }}?user_id={{ current_user.id }}">Проверка работ</a>
+                    <span>→</span>
+                    <span>Карточка попытки</span>
+                </nav>
+                <div class="course-hero-grid">
+                    <div>
+                        <p class="section-label">Карточка работы</p>
+                        <h1>Попытка №{{ attempt.attempt_number }}</h1>
+                        <p class="hero-text">Здесь преподаватель видит условие, файл решения, распознанный текст, комментарий ИИ и историю попыток.</p>
+                    </div>
+                    <aside class="control-panel">
+                        <label>
+                            Тестовый пользователь
+                            <select id="user-select"></select>
+                        </label>
+                        <div class="profile-mini">
+                            <strong id="profile-name">{{ current_user.name }}</strong>
+                            <span id="profile-meta">{{ current_user.email }}</span>
+                        </div>
+                    </aside>
+                </div>
+            </div>
+        </section>
+
+        <section class="section-block">
+            <div class="container detail-page-layout">
+                <section id="teacher-attempt-detail" class="teacher-review-root">
+                    <h3>Загрузка работы</h3>
+                    <p class="muted-text">Карточка попытки загружается из базы данных.</p>
+                </section>
+            </div>
+        </section>
+    </main>
+
+    <div id="modal" class="modal" hidden>
+        <div class="modal-card">
+            <button id="modal-close" class="modal-close" type="button">×</button>
+            <h3 id="modal-title">Информация</h3>
+            <div id="modal-text"></div>
+        </div>
+    </div>
+
+    <div id="image-modal" class="image-modal" hidden>
+        <div class="image-modal-card">
+            <button id="image-modal-close" class="modal-close" type="button">×</button>
+            <img id="image-modal-img" alt="Загруженное решение ученика">
+            <div class="image-modal-actions">
+                <a id="image-modal-open" class="button button-secondary" href="#" target="_blank" rel="noreferrer">Открыть в новой вкладке</a>
+                <a id="image-modal-download" class="button button-ghost" href="#" download>Скачать файл</a>
+            </div>
+        </div>
+    </div>
+
+    <script src="{{ url_for('static', path='app.js') }}?v=20260625"></script>
+</body>
+</html>

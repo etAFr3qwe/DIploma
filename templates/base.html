@@ -1,0 +1,24 @@
+{% macro topbar(active_page="home") -%}
+<header class="topbar">
+    <div class="container nav-layout">
+        <a class="brand" href="{{ url_for('index') }}">Платформа подготовки к экзаменам</a>
+        <nav id="main-nav" class="main-nav" aria-label="Основная навигация" data-active-page="{{ active_page }}">
+            <a data-nav-item="home" data-nav-roles="guest,student,teacher,parent,admin" href="{{ url_for('index') }}">Главная</a>
+            <a data-nav-item="courses" data-nav-roles="guest,student,teacher,admin" href="{{ url_for('list_courses') }}">Курсы</a>
+            <a data-nav-item="plan" data-nav-roles="student" href="{{ url_for('student_plan_page') }}">План</a>
+            <a data-nav-item="analytics" data-nav-roles="student" href="{{ url_for('student_analytics_page') }}">Аналитика</a>
+            <a data-nav-item="forecast" data-nav-roles="student" href="{{ url_for('student_forecast_page') }}">Прогноз</a>
+            <a data-nav-item="tutor" data-nav-roles="student" href="{{ url_for('tutor_page') }}">ИИ-тьютор</a>
+            <a data-nav-item="parent_report" data-nav-roles="parent" href="{{ url_for('parent_report_page') }}">Родительский отчёт</a>
+            <a data-nav-item="parent_progress" data-nav-roles="parent" href="{{ url_for('parent_progress_page') }}">Прогресс ребёнка</a>
+            <a data-nav-item="admin_users" data-nav-roles="admin" href="{{ url_for('admin_users_page') }}">Пользователи</a>
+            <a data-nav-item="teacher" data-nav-roles="teacher,admin" href="{{ url_for('teacher_page') }}">Панель преподавателя</a>
+            <a data-nav-item="teacher_attempts" data-nav-roles="teacher" href="{{ url_for('get_teacher_attempts') }}">Проверка работ</a>
+            <a data-nav-item="admin_parent_reports" data-nav-roles="admin" href="{{ url_for('parent_report_page') }}">Родительские отчёты</a>
+            <a data-nav-item="admin_analytics" data-nav-roles="admin" href="{{ url_for('admin_page') }}">Аналитика</a>
+            <a data-nav-item="login" data-nav-roles="guest" href="{{ url_for('login_page') }}">Войти</a>
+            <a data-nav-item="logout" data-nav-roles="student,teacher,parent,admin" href="{{ url_for('index') }}">Выйти</a>
+        </nav>
+    </div>
+</header>
+{%- endmacro %}

@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ title }} — Платформа подготовки к экзаменам</title>
+    <link rel="stylesheet" href="{{ url_for('static', path='style.css') }}?v=20260625">
+</head>
+<body data-page="{{ active_page or 'message' }}">
+    {% import "base.html" as layout with context %}
+    {{ layout.topbar(active_page or "home") }}
+
+    <main>
+        <section class="section-block">
+            <div class="container">
+                <article class="message-card">
+                    <p class="section-label">{{ label or "Информация" }}</p>
+                    <h1>{{ title }}</h1>
+                    <p class="hero-text">{{ message }}</p>
+                    {% if primary_href %}
+                        <a class="button button-primary" href="{{ primary_href }}">{{ primary_text or "Перейти" }}</a>
+                    {% endif %}
+                </article>
+            </div>
+        </section>
+    </main>
+
+    <script src="{{ url_for('static', path='app.js') }}?v=20260625"></script>
+</body>
+</html>

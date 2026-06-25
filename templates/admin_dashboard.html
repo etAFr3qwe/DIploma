@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Аналитика администратора — Платформа подготовки к экзаменам</title>
+    <link rel="stylesheet" href="{{ url_for('static', path='style.css') }}?v=20260625">
+</head>
+<body data-page="admin-dashboard" data-current-user-id="{{ current_user.id }}">
+    {% import "base.html" as layout with context %}
+    {{ layout.topbar("admin_analytics") }}
+
+    <main>
+        <section class="course-hero">
+            <div class="container">
+                <div class="course-hero-grid">
+                    <div>
+                        <p class="section-label">Администрирование</p>
+                        <h1>Сводка системы</h1>
+                        <p class="hero-text">Панель с данными пользователей, курсов, заданий и отправленных попыток.</p>
+                    </div>
+                    <aside class="control-panel">
+                        <label>
+                            Тестовый пользователь
+                            <select id="user-select"></select>
+                        </label>
+                        <div class="profile-mini">
+                            <strong id="profile-name">{{ current_user.name }}</strong>
+                            <span id="profile-meta">{{ current_user.email }}</span>
+                        </div>
+                    </aside>
+                </div>
+            </div>
+        </section>
+
+        <section class="section-block">
+            <div class="container">
+                <div class="role-card-grid">
+                    <a class="role-card" href="{{ url_for('admin_users_page') }}?user_id={{ current_user.id }}">
+                        <span class="section-label">Пользователи</span>
+                        <h2>Пользователи</h2>
+                        <p>Ученики, преподаватели, родители и администраторы.</p>
+                        <span class="role-card-action">Открыть список</span>
+                    </a>
+                    <a class="role-card" href="{{ url_for('admin_courses_page') }}?user_id={{ current_user.id }}">
+                        <span class="section-label">Курсы</span>
+                        <h2>Курсы</h2>
+                        <p>Два курса подготовки: ОГЭ и ЕГЭ по математике.</p>
+                        <span class="role-card-action">Перейти к курсам</span>
+                    </a>
+                    <a class="role-card" href="{{ url_for('get_teacher_attempts') }}?user_id={{ current_user.id }}">
+                        <span class="section-label">Работы</span>
+                        <h2>Работы учеников</h2>
+                        <p>Все отправленные попытки и карточки проверки.</p>
+                        <span class="role-card-action">Проверить работы</span>
+                    </a>
+                    <a class="role-card" href="{{ url_for('parent_report_page') }}?user_id={{ current_user.id }}">
+                        <span class="section-label">Отчёты</span>
+                        <h2>Родительские отчёты</h2>
+                        <p>Отчёт по назначенному ученику.</p>
+                        <span class="role-card-action">Открыть отчёт</span>
+                    </a>
+                </div>
+
+                <div id="admin-analytics" class="metrics-grid admin-metrics">
+                    <div class="metric-item"><span>Пользователей</span><strong>{{ stats.users }}</strong></div>
+                    <div class="metric-item"><span>Учеников</span><strong>{{ stats.students }}</strong></div>
+                    <div class="metric-item"><span>Преподавателей</span><strong>{{ stats.teachers }}</strong></div>
+                    <div class="metric-item"><span>Родителей</span><strong>{{ stats.parents }}</strong></div>
+                    <div class="metric-item"><span>Курсов</span><strong>{{ stats.courses }}</strong></div>
+                    <div class="metric-item"><span>Заданий</span><strong>{{ stats.tasks }}</strong></div>
+                    <div class="metric-item"><span>Отправленных попыток</span><strong>{{ stats.attempts }}</strong></div>
+                    <div class="metric-item"><span>Проверенных попыток</span><strong>{{ stats.checked_attempts }}</strong></div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <div id="modal" class="modal" hidden>
+        <div class="modal-card">
+            <button id="modal-close" class="modal-close" type="button">×</button>
+            <h3 id="modal-title">Информация</h3>
+            <div id="modal-text"></div>
+        </div>
+    </div>
+
+    <script src="{{ url_for('static', path='app.js') }}?v=20260625"></script>
+</body>
+</html>

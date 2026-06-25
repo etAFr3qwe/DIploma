@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Прогресс ребёнка — Платформа подготовки к экзаменам</title>
+    <link rel="stylesheet" href="{{ url_for('static', path='style.css') }}?v=20260625">
+</head>
+<body data-page="parent-progress" data-current-user-id="{{ current_user.id }}">
+    {% import "base.html" as layout with context %}
+    {{ layout.topbar("parent_progress") }}
+
+    <main>
+        <section class="course-hero">
+            <div class="container">
+                <div class="course-hero-grid">
+                    <div>
+                        <p class="section-label">Прогресс ребёнка</p>
+                        <h1>{{ child.name }}</h1>
+                        <p class="hero-text">Последние попытки, статусы проверки, баллы, комментарии и доступные файлы решений.</p>
+                    </div>
+                    <aside class="control-panel">
+                        <label>
+                            Тестовый пользователь
+                            <select id="user-select"></select>
+                        </label>
+                        <div class="profile-mini">
+                            <strong id="profile-name">{{ current_user.name }}</strong>
+                            <span id="profile-meta">{{ current_user.email }}</span>
+                        </div>
+                    </aside>
+                </div>
+            </div>
+        </section>
+
+        <section class="section-block">
+            <div class="container">
+                <div class="stats-strip">
+                    <div class="metric-item"><span>Попыток</span><strong>{{ report.attempts_count }}</strong></div>
+                    <div class="metric-item"><span>Верных решений</span><strong>{{ report.correct_percent|round|int }}%</strong></div>
+                    <div class="metric-item"><span>Среднее время</span><strong>{{ report.average_time_seconds|duration }}</strong></div>
+                    <div class="metric-item"><span>Прогноз</span><strong>{{ report.predicted_primary_score }}</strong></div>
+                </div>
+
+                {% if attempts %}
+                    <div class="table-wrap">
+                        <table class="teacher-attempt-table">
+                            <thead>
+                                <tr>
+                                    <th>Дата</th>
+                                    <th>Задание</th>
+                                    <th>Статус</th>
+                                    <th>Балл</th>
+                                    <th>Комментарий</th>
+                                    <th>Файл решения</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for attempt in attempts %}
+                                    {% set review = attempt.ai_reviews[-1] if attempt.ai_reviews else none %}
+                                    {% set comment = attempt.teacher_comments[-1] if attempt.teacher_comments else none %}
+                                    <tr>
+                                        <td>{{ (attempt.committed_at or attempt.started_at)|datetime_ru }}</td>
+                                        <td>
+                                            <strong>{{ attempt.task.title }}</strong>
+                                            <span class="cell-note">{{ attempt.task.topic.title if attempt.task and attempt.task.topic else "" }}</span>
+                                        </td>
+                                        <td><span class="status-pill neutral">{{ attempt.status }}</span></td>
+                                        <td>{{ attempt.score if attempt.score is not none else "-" }}</td>
+                                        <td>{{ comment.comment_text if comment else review.review_text if review else "Комментарий появится после проверки." }}</td>
+                                        <td>
+                                            {% if attempt.uploaded_file_path %}
+                                                <a class="button small ghost" href="/solutions/{{ attempt.id }}/file?viewer_id={{ current_user.id }}" target="_blank" rel="noreferrer">Открыть файл решения</a>
+                                            {% else %}
+                                                <span class="muted-text">Файл отсутствует</span>
+                                            {% endif %}
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                {% else %}
+                    <div class="empty-card">Отчёт появится после выполнения первых заданий.</div>
+                {% endif %}
+            </div>
+        </section>
+    </main>
+
+    <div id="modal" class="modal" hidden>
+        <div class="modal-card">
+            <button id="modal-close" class="modal-close" type="button">×</button>
+            <h3 id="modal-title">Информация</h3>
+            <div id="modal-text"></div>
+        </div>
+    </div>
+
+    <script src="{{ url_for('static', path='app.js') }}?v=20260625"></script>
+</body>
+</html>

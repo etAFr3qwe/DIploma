@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Пользователи — Платформа подготовки к экзаменам</title>
+    <link rel="stylesheet" href="{{ url_for('static', path='style.css') }}?v=20260625">
+</head>
+<body data-page="admin-users" data-current-user-id="{{ current_user.id }}">
+    {% import "base.html" as layout with context %}
+    {{ layout.topbar("admin_users") }}
+
+    <main>
+        <section class="course-hero">
+            <div class="container">
+                <div class="course-hero-grid">
+                    <div>
+                        <p class="section-label">Администрирование</p>
+                        <h1>Пользователи</h1>
+                        <p class="hero-text">Список тестовых пользователей с ролями, классом, целевым экзаменом и целью подготовки.</p>
+                    </div>
+                    <aside class="control-panel">
+                        <label>
+                            Тестовый пользователь
+                            <select id="user-select"></select>
+                        </label>
+                        <div class="profile-mini">
+                            <strong id="profile-name">{{ current_user.name }}</strong>
+                            <span id="profile-meta">{{ current_user.email }}</span>
+                        </div>
+                    </aside>
+                </div>
+            </div>
+        </section>
+
+        <section class="section-block">
+            <div class="container">
+                <div class="table-wrap">
+                    <table class="teacher-attempt-table">
+                        <thead>
+                            <tr>
+                                <th>Имя</th>
+                                <th>Email</th>
+                                <th>Роль</th>
+                                <th>Класс</th>
+                                <th>Целевой экзамен</th>
+                                <th>Цель</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for user in users %}
+                                <tr>
+                                    <td><strong>{{ user.name }}</strong></td>
+                                    <td>{{ user.email }}</td>
+                                    <td>{{ user.role }}</td>
+                                    <td>{{ user.grade }}</td>
+                                    <td>{{ user.target_exam }}</td>
+                                    <td>{{ user.goal }}</td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <div id="modal" class="modal" hidden>
+        <div class="modal-card">
+            <button id="modal-close" class="modal-close" type="button">×</button>
+            <h3 id="modal-title">Информация</h3>
+            <div id="modal-text"></div>
+        </div>
+    </div>
+
+    <script src="{{ url_for('static', path='app.js') }}?v=20260625"></script>
+</body>
+</html>

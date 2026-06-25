@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ section_title }} — Платформа подготовки к экзаменам</title>
+    <link rel="stylesheet" href="{{ url_for('static', path='style.css') }}?v=20260625">
+</head>
+<body data-page="section" data-course-id="{{ course_id }}" data-section-id="{{ section_id }}">
+    {% import "base.html" as layout with context %}
+    {{ layout.topbar("courses") }}
+
+    <main>
+        <section class="course-hero">
+            <div class="container">
+                <nav id="breadcrumbs" class="breadcrumbs"></nav>
+                <div class="course-hero-grid">
+                    <div>
+                        <p class="section-label">Модуль курса</p>
+                        <h1 id="section-title">Модуль</h1>
+                        <p id="section-description" class="hero-text"></p>
+                    </div>
+                    <aside class="module-actions">
+                        <button id="start-training-button" class="button button-primary" type="button">Начать тренировку</button>
+                        <button id="section-similar-button" class="button button-secondary" type="button">Сгенерировать похожие задания</button>
+                        <button id="ask-section-ai-button" class="button button-ghost" type="button">Спросить ИИ по теме</button>
+                    </aside>
+                </div>
+                <div id="section-stats" class="stats-strip"></div>
+            </div>
+        </section>
+
+        <section class="section-block">
+            <div class="container module-layout">
+                <aside class="theory-card">
+                    <p class="section-label">Теория по модулю</p>
+                    <h2>Коротко о подходе</h2>
+                    <p id="section-theory"></p>
+                </aside>
+                <div>
+                    <div class="section-heading">
+                        <div>
+                            <p class="section-label">Темы внутри модуля</p>
+                            <h2>Теория, примеры и задания</h2>
+                        </div>
+                    </div>
+                    <div id="topic-list" class="topic-list"></div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <div id="modal" class="modal" hidden>
+        <div class="modal-card">
+            <button id="modal-close" class="modal-close" type="button">×</button>
+            <h3 id="modal-title">Информация</h3>
+            <div id="modal-text"></div>
+        </div>
+    </div>
+
+    <script src="{{ url_for('static', path='app.js') }}?v=20260625"></script>
+</body>
+</html>

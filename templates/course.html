@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ course_title }} — Платформа подготовки к экзаменам</title>
+    <link rel="stylesheet" href="{{ url_for('static', path='style.css') }}?v=20260625">
+</head>
+<body data-page="course" data-course-id="{{ course_id }}">
+    {% import "base.html" as layout with context %}
+    {{ layout.topbar("courses") }}
+
+    <main>
+        <section class="course-hero">
+            <div class="container">
+                <nav id="breadcrumbs" class="breadcrumbs"></nav>
+                <div class="course-hero-grid">
+                    <div>
+                        <p id="course-exam" class="section-label">Экзамен</p>
+                        <h1 id="course-title">Курс</h1>
+                        <p id="course-description" class="hero-text"></p>
+                    </div>
+                    <aside class="control-panel">
+                        <label>
+                            Тестовый пользователь
+                            <select id="user-select"></select>
+                        </label>
+                        <div class="profile-mini">
+                            <strong id="profile-name">-</strong>
+                            <span id="profile-meta">-</span>
+                        </div>
+                    </aside>
+                </div>
+                <div id="course-stats" class="stats-strip"></div>
+            </div>
+        </section>
+
+        <section class="section-block">
+            <div class="container">
+                <div class="tabs">
+                    <button class="tab-button active" type="button" data-tab="modules">Модули</button>
+                    <button class="tab-button" type="button" data-tab="weekly-plan">План на неделю</button>
+                    <button class="tab-button" type="button" data-tab="attempts">Мои попытки</button>
+                    <button class="tab-button" type="button" data-tab="analytics">Аналитика</button>
+                    <button class="tab-button" type="button" data-tab="tutor">ИИ-тьютор</button>
+                    <button class="tab-button" type="button" data-tab="materials">Материалы курса</button>
+                </div>
+
+                <section id="modules" class="tab-panel active">
+                    <div class="section-heading">
+                        <div>
+                            <p class="section-label">Главный раздел</p>
+                            <h2>Модули курса</h2>
+                        </div>
+                    </div>
+                    <div id="module-grid" class="module-grid"></div>
+                </section>
+
+                <section id="weekly-plan" class="tab-panel">
+                    <div class="section-heading">
+                        <div>
+                            <p class="section-label">План на неделю</p>
+                            <h2>Назначенные задания</h2>
+                        </div>
+                        <button id="create-pool-button" class="button button-secondary" type="button">Назначить новый пул</button>
+                    </div>
+                    <div id="weekly-plan-list" class="weekly-table"></div>
+                </section>
+
+                <section id="attempts" class="tab-panel">
+                    <div class="section-heading">
+                        <div>
+                            <p class="section-label">История без удаления</p>
+                            <h2>Мои попытки</h2>
+                        </div>
+                    </div>
+                    <div id="attempt-history" class="attempt-grid"></div>
+                </section>
+
+                <section id="analytics" class="tab-panel">
+                    <div class="analytics-grid">
+                        <div>
+                            <p class="section-label">Аналитика</p>
+                            <h2>Прогресс и ошибки</h2>
+                            <div id="analytics-panel" class="metrics-grid"></div>
+                        </div>
+                        <aside id="forecast" class="forecast-card">
+                            <h3>Прогноз результата</h3>
+                            <div id="forecast-panel"></div>
+                        </aside>
+                    </div>
+                </section>
+
+                <section id="tutor" class="tab-panel">
+                    <div class="chat-layout">
+                        <div>
+                            <p class="section-label">ИИ-тьютор</p>
+                            <h2>Вопрос по курсу</h2>
+                            <p class="muted-text">ИИ учитывает курс, текущие темы, попытки и рекомендации.</p>
+                            <div class="prompt-list">
+                                <button type="button" data-prompt="Составь план подготовки по этому курсу">План подготовки</button>
+                                <button type="button" data-prompt="Какие модули мне стоит повторить?">Что повторить</button>
+                                <button type="button" data-prompt="Объясни, как работать с ошибками">Работа с ошибками</button>
+                            </div>
+                        </div>
+                        <article class="chat-card">
+                            <div id="chat-messages" class="chat-messages">
+                                <div class="message assistant">Здравствуйте! Я ИИ-тьютор разработанной платформы. Помогу выбрать модуль, разобрать тему и подготовиться к экзамену.</div>
+                            </div>
+                            <form id="chat-form" class="chat-form">
+                                <textarea id="chat-input" rows="2" placeholder="Напишите вопрос по курсу" required></textarea>
+                                <button class="button button-primary" type="submit">Отправить</button>
+                            </form>
+                        </article>
+                    </div>
+                </section>
+
+                <section id="materials" class="tab-panel">
+                    <div class="materials-card">
+                        <h2>Материалы курса</h2>
+                        <p>Откройте модуль, чтобы увидеть теорию, примеры решения и задания по конкретной теме.</p>
+                        <div id="materials-list" class="materials-list"></div>
+                    </div>
+                </section>
+            </div>
+        </section>
+
+        <section id="parent-report" class="section-block soft-section">
+            <div class="container">
+                <div class="section-heading">
+                    <div>
+                        <p class="section-label">Отчёт для родителей</p>
+                        <h2>Что ученик реально делал</h2>
+                    </div>
+                </div>
+                <div id="parent-report-panel" class="report-card"></div>
+            </div>
+        </section>
+
+        <section id="teacher-panel" class="section-block">
+            <div class="container">
+                <div class="section-heading">
+                    <div>
+                        <p class="section-label">Панель преподавателя</p>
+                        <h2>Работы учеников на проверке</h2>
+                    </div>
+                    <button id="train-button" class="button button-secondary" type="button">Обновить прогнозную модель</button>
+                </div>
+                <div id="teacher-summary" class="teacher-summary-grid"></div>
+                <div id="teacher-student-list" class="teacher-student-list"></div>
+
+                <div id="teacher-status-tabs" class="teacher-status-tabs" aria-label="Быстрые фильтры работ">
+                    <button class="active" type="button" data-teacher-status-tab="">Все работы</button>
+                    <button type="button" data-teacher-status-tab="review">На проверке</button>
+                    <button type="button" data-teacher-status-tab="checked">Проверенные</button>
+                    <button type="button" data-teacher-status-tab="требуется исправление">Требуют исправления</button>
+                    <button type="button" data-teacher-status-tab="зачтено">Зачтено</button>
+                    <button type="button" data-teacher-status-tab="не зачтено">Не зачтено</button>
+                </div>
+
+                <form id="teacher-filters" class="teacher-filters">
+                    <label>
+                        Ученик
+                        <select id="teacher-filter-user">
+                            <option value="">Все ученики</option>
+                        </select>
+                    </label>
+                    <label>
+                        Курс
+                        <select id="teacher-filter-course">
+                            <option value="">Все курсы</option>
+                        </select>
+                    </label>
+                    <label>
+                        Статус работы
+                        <select id="teacher-filter-status">
+                            <option value="">Все статусы</option>
+                            <option value="не начато">Не начато</option>
+                            <option value="в работе">В работе</option>
+                            <option value="отправлено">Отправлено</option>
+                            <option value="проверяется ИИ">Проверяется ИИ</option>
+                            <option value="проверено ИИ">Проверено ИИ</option>
+                            <option value="проверено преподавателем">Проверено преподавателем</option>
+                            <option value="нужна ручная проверка">Нужна ручная проверка</option>
+                            <option value="требуется исправление">Требует исправления</option>
+                            <option value="зачтено">Зачтено</option>
+                            <option value="не зачтено">Не зачтено</option>
+                        </select>
+                    </label>
+                    <label>
+                        Модуль
+                        <select id="teacher-filter-section">
+                            <option value="">Все модули</option>
+                        </select>
+                    </label>
+                    <label>
+                        Тема
+                        <select id="teacher-filter-topic">
+                            <option value="">Все темы</option>
+                        </select>
+                    </label>
+                    <label>
+                        Номер задания
+                        <input id="teacher-filter-task" type="text" placeholder="Например: ОГЭ 3">
+                    </label>
+                    <label>
+                        Поиск
+                        <input id="teacher-filter-search" type="text" placeholder="Ученик, тема или задание">
+                    </label>
+                    <label>
+                        Сортировка
+                        <select id="teacher-sort">
+                            <option value="date_desc">Сначала новые</option>
+                            <option value="date_asc">Сначала старые</option>
+                            <option value="student">По ученику</option>
+                            <option value="status">По статусу</option>
+                        </select>
+                    </label>
+                    <label>
+                        Дата с
+                        <input id="teacher-filter-date-from" type="date">
+                    </label>
+                    <label>
+                        Дата по
+                        <input id="teacher-filter-date-to" type="date">
+                    </label>
+                    <button class="button button-primary" type="submit">Показать работы</button>
+                </form>
+
+                <div class="teacher-workspace">
+                    <section class="teacher-table-card">
+                        <div class="section-heading compact-heading">
+                            <div>
+                                <p class="section-label">Таблица</p>
+                                <h3>Работы на проверке</h3>
+                            </div>
+                        </div>
+                        <div class="table-wrap">
+                            <table class="teacher-attempt-table">
+                                <thead>
+                                    <tr>
+                                        <th>Ученик</th>
+                                        <th>Курс</th>
+                                        <th>Задание</th>
+                                        <th>Тема</th>
+                                        <th>Попытка №</th>
+                                        <th>Дата отправки</th>
+                                        <th>Время решения</th>
+                                        <th>Файл / ответ</th>
+                                        <th>Статус проверки</th>
+                                        <th>Балл</th>
+                                        <th>Действие</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="teacher-attempts-body"></tbody>
+                            </table>
+                        </div>
+                    </section>
+
+                    <aside id="teacher-attempt-detail" class="teacher-detail-card">
+                        <h3>Выберите работу</h3>
+                        <p class="muted-text">Нажмите «Открыть работу» в таблице, чтобы увидеть решение, файл, комментарий ИИ и историю попыток.</p>
+                    </aside>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <div id="modal" class="modal" hidden>
+        <div class="modal-card">
+            <button id="modal-close" class="modal-close" type="button">×</button>
+            <h3 id="modal-title">Информация</h3>
+            <div id="modal-text"></div>
+        </div>
+    </div>
+
+    <div id="image-modal" class="image-modal" hidden>
+        <div class="image-modal-card">
+            <button id="image-modal-close" class="modal-close" type="button">×</button>
+            <img id="image-modal-img" alt="Загруженное решение ученика">
+            <div class="image-modal-actions">
+                <a id="image-modal-open" class="button button-secondary" href="#" target="_blank" rel="noreferrer">Открыть в новой вкладке</a>
+                <a id="image-modal-download" class="button button-ghost" href="#" download>Скачать файл</a>
+            </div>
+        </div>
+    </div>
+
+    <script src="{{ url_for('static', path='app.js') }}?v=20260625"></script>
+</body>
+</html>

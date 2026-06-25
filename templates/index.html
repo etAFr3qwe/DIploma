@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Платформа подготовки к ОГЭ и ЕГЭ по математике</title>
+    <link rel="stylesheet" href="{{ url_for('static', path='style.css') }}?v=20260625">
+</head>
+<body data-page="home">
+    {% import "base.html" as layout with context %}
+    {{ layout.topbar("home") }}
+
+    <main>
+        <section class="hero-section">
+            <div class="container hero-grid">
+                <div>
+                    <h1>Подготовка к ОГЭ и ЕГЭ по математике</h1>
+                    <h2>Контроль решений, ИИ-проверка, аналитика прогресса и прогноз результата</h2>
+                    <p class="hero-text">
+                        Выберите курс, получите план заданий, решайте задачи с таймером,
+                        загружайте решения и отслеживайте реальный уровень подготовки.
+                    </p>
+                    <div class="hero-actions home-action-grid" aria-label="Основные действия">
+                        <a class="button primary" href="/#courses" data-home-action="startOge">Начать подготовку к ОГЭ</a>
+                        <a class="button ghost" href="/#courses" data-home-action="startEge">Начать подготовку к ЕГЭ</a>
+                        <a class="button ghost" href="/courses/1/plan" data-home-action="plan">Мой план</a>
+                        <a class="button ghost" href="/analytics" data-home-action="analytics">Аналитика</a>
+                        <a class="button ghost" href="/courses/1#tutor" data-home-action="tutor">ИИ-тьютор</a>
+                        <a class="button ghost" href="/teacher" data-home-action="teacher">Панель преподавателя</a>
+                        <a class="button ghost" href="/parent" data-home-action="parent">Родительский отчёт</a>
+                    </div>
+                </div>
+                <aside class="control-panel">
+                    <label>
+                        Тестовый пользователь
+                        <select id="user-select"></select>
+                    </label>
+                    <p class="control-hint">Выберите роль для проверки ученического сценария, панели преподавателя или родительского отчёта.</p>
+                    <div class="profile-mini">
+                        <strong id="profile-name">-</strong>
+                        <span id="profile-meta">-</span>
+                    </div>
+                    <div class="auth-actions">
+                        <span id="auth-status" class="muted-text">Вход выполнен</span>
+                        <div class="card-actions">
+                            <button id="login-button" class="button button-secondary" type="button">Войти</button>
+                            <button id="logout-button" class="button button-ghost" type="button">Выйти</button>
+                        </div>
+                    </div>
+                </aside>
+            </div>
+        </section>
+
+        <section id="courses" class="section-block">
+            <div class="container">
+                <div class="section-heading">
+                    <div>
+                        <p class="section-label">Курсы</p>
+                        <h2>Выберите экзамен</h2>
+                    </div>
+                </div>
+                <div id="home-course-grid" class="course-grid course-grid-large"></div>
+            </div>
+        </section>
+
+    </main>
+
+    <div id="modal" class="modal" hidden>
+        <div class="modal-card">
+            <button id="modal-close" class="modal-close" type="button">×</button>
+            <h3 id="modal-title">Информация</h3>
+            <div id="modal-text"></div>
+        </div>
+    </div>
+
+    <script src="{{ url_for('static', path='app.js') }}?v=20260625"></script>
+</body>
+</html>

@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Проверка работ — Платформа подготовки к экзаменам</title>
+    <link rel="stylesheet" href="{{ url_for('static', path='style.css') }}?v=20260625">
+</head>
+<body data-page="teacher-attempts" data-current-user-id="{{ current_user.id }}">
+    {% import "base.html" as layout with context %}
+    {{ layout.topbar("teacher_attempts") }}
+
+    <main>
+        <section class="course-hero">
+            <div class="container">
+                <div class="course-hero-grid">
+                    <div>
+                        <p class="section-label">Проверка работ</p>
+                        <h1>Работы учеников на проверке</h1>
+                        <p class="hero-text">Фильтруйте отправленные решения, открывайте карточку работы и сохраняйте итоговый комментарий преподавателя.</p>
+                    </div>
+                    <aside class="control-panel">
+                        <label>
+                            Тестовый пользователь
+                            <select id="user-select"></select>
+                        </label>
+                        <div class="profile-mini">
+                            <strong id="profile-name">{{ current_user.name }}</strong>
+                            <span id="profile-meta">{{ current_user.email }}</span>
+                        </div>
+                    </aside>
+                </div>
+            </div>
+        </section>
+
+        <section class="section-block">
+            <div class="container">
+                <div id="teacher-summary" class="teacher-summary-grid"></div>
+
+                <div id="teacher-status-tabs" class="teacher-status-tabs" aria-label="Быстрые фильтры работ">
+                    <button class="active" type="button" data-teacher-status-tab="">Все работы</button>
+                    <button type="button" data-teacher-status-tab="review">На проверке</button>
+                    <button type="button" data-teacher-status-tab="checked">Проверенные</button>
+                    <button type="button" data-teacher-status-tab="требуется исправление">Требуют исправления</button>
+                    <button type="button" data-teacher-status-tab="зачтено">Зачтено</button>
+                    <button type="button" data-teacher-status-tab="не зачтено">Не зачтено</button>
+                </div>
+
+                <form id="teacher-filters" class="teacher-filters">
+                    <label>Ученик<select id="teacher-filter-user"><option value="">Все ученики</option></select></label>
+                    <label>Курс<select id="teacher-filter-course"><option value="">Все курсы</option></select></label>
+                    <label>
+                        Статус работы
+                        <select id="teacher-filter-status">
+                            <option value="">Все статусы</option>
+                            <option value="отправлено">Отправлено</option>
+                            <option value="проверено ИИ">Проверено ИИ</option>
+                            <option value="нужна ручная проверка">Нужна ручная проверка</option>
+                            <option value="проверено преподавателем">Проверено преподавателем</option>
+                            <option value="требуется исправление">Требует исправления</option>
+                            <option value="зачтено">Зачтено</option>
+                            <option value="не зачтено">Не зачтено</option>
+                        </select>
+                    </label>
+                    <label>Модуль<select id="teacher-filter-section"><option value="">Все модули</option></select></label>
+                    <label>Тема<select id="teacher-filter-topic"><option value="">Все темы</option></select></label>
+                    <label>Номер задания<input id="teacher-filter-task" type="text" placeholder="Например: ОГЭ 3"></label>
+                    <label>Поиск<input id="teacher-filter-search" type="text" placeholder="Ученик, тема или задание"></label>
+                    <label>
+                        Сортировка
+                        <select id="teacher-sort">
+                            <option value="date_desc">Сначала новые</option>
+                            <option value="date_asc">Сначала старые</option>
+                            <option value="student">По ученику</option>
+                            <option value="status">По статусу</option>
+                        </select>
+                    </label>
+                    <label>Дата с<input id="teacher-filter-date-from" type="date"></label>
+                    <label>Дата по<input id="teacher-filter-date-to" type="date"></label>
+                    <button class="button button-primary" type="submit">Показать работы</button>
+                </form>
+
+                <div class="teacher-workspace teacher-workspace-single">
+                    <section class="teacher-table-card">
+                        <div class="section-heading compact-heading">
+                            <div>
+                                <p class="section-label">Таблица</p>
+                                <h2>Работы на проверке</h2>
+                            </div>
+                        </div>
+                        <div class="table-wrap">
+                            <table class="teacher-attempt-table">
+                                <thead>
+                                    <tr>
+                                        <th>Ученик</th>
+                                        <th>Курс</th>
+                                        <th>Задание</th>
+                                        <th>Тема</th>
+                                        <th>Попытка №</th>
+                                        <th>Дата отправки</th>
+                                        <th>Время решения</th>
+                                        <th>Файл / ответ</th>
+                                        <th>Статус проверки</th>
+                                        <th>Балл</th>
+                                        <th>Действие</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="teacher-attempts-body"></tbody>
+                            </table>
+                        </div>
+                    </section>
+                </div>
+
+                <section class="teacher-students-section">
+                    <div class="section-heading compact-heading">
+                        <div>
+                            <p class="section-label">Ученики</p>
+                            <h2>Краткая сводка по ученикам</h2>
+                        </div>
+                    </div>
+                    <div id="teacher-student-list" class="teacher-student-list"></div>
+                </section>
+            </div>
+        </section>
+    </main>
+
+    <div id="modal" class="modal" hidden>
+        <div class="modal-card">
+            <button id="modal-close" class="modal-close" type="button">×</button>
+            <h3 id="modal-title">Информация</h3>
+            <div id="modal-text"></div>
+        </div>
+    </div>
+
+    <script src="{{ url_for('static', path='app.js') }}?v=20260625"></script>
+</body>
+</html>
